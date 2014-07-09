@@ -27,6 +27,17 @@ def is_enabled(config_name, mandatory=None):
         else:
             return 'missing'
 
+def get_cgroup_mount_path(search_for,search_where):
+    allmounts = open(search_where,'r')
+    for mount_line in allmounts:
+        if mount_line.startswith('#'):
+            pass
+        else:
+            mls = mount_line.split(' ')
+            if mls[2] == search_for:
+                return mls[1]
+
+
 ####################################
 ## BASH CODE NEED HELP TO CONVERT ##
 ####################################
@@ -49,6 +60,8 @@ def is_enabled(config_name, mandatory=None):
 
 ####################################
 ####################################
+
+CGROUP_MNT_PATH = get_cgroup_mount_path('cgroup','/proc/self/mounts')
 
 kver = platform.uname()[2]
 kver_split = kver.split('.')
