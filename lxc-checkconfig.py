@@ -30,9 +30,7 @@ def is_enabled(config_name, mandatory=None):
 def get_cgroup_mount_path(search_for,search_where):
     allmounts = open(search_where,'r')
     for mount_line in allmounts:
-        if mount_line.startswith('#'):
-            pass
-        else:
+        if not mount_line.startswith('#'):
             mls = mount_line.split(' ')
             if mls[2] == search_for:
                 return mls[1]
@@ -47,7 +45,7 @@ def get_cgroup_mount_path(search_for,search_where):
 #   awk '$1 !~ /#/ && $3 == mp { print $2; } ; END { exit(0); } '  "mp=$1" "$2" ;
 # }
 
-# CGROUP_MNT_PATH=`print_cgroups cgroup /proc/self/mounts | head -n 1`
+## DONE ## CGROUP_MNT_PATH=`print_cgroups cgroup /proc/self/mounts | head -n 1`
 # KVER_MAJOR=$($GREP '^# Linux.*Kernel Configuration' $CONFIG | \
 #     sed -r 's/.* ([0-9])\.[0-9]{1,2}\.[0-9]{1,3}.*/\1/')
 # if [ "$KVER_MAJOR" = "2" ]; then
@@ -61,7 +59,7 @@ def get_cgroup_mount_path(search_for,search_where):
 ####################################
 ####################################
 
-CGROUP_MNT_PATH = get_cgroup_mount_path('cgroup','/proc/self/mounts')
+cgroup_mnt_path = get_cgroup_mount_path('cgroup','/proc/self/mounts')
 
 kver = platform.uname()[2]
 kver_split = kver.split('.')
@@ -97,7 +95,10 @@ config_dict['Multiple /dev/pts instances'] = is_enabled('CONFIG_DEVPTS_MULTIPLE_
 
 # Control groups
 config_dict['Cgroup'] = is_enabled('CONFIG_CGROUPS', True)
-config_dict['Cgroup namespace'] = is_enabled('CONFIG_CGROUP_NS', True)
+if os.path.isfile('%s/cgroup.clone_children' % cgroup_mnt_path):
+    config_dict['Cgroup clone_children flag'] = 'enabled'
+else:
+    config_dict['Cgroup namespace'] = is_enabled('CONFIG_CGROUP_NS', True)
 config_dict['Cgroup device'] = is_enabled('CONFIG_CGROUP_DEVICE')
 config_dict['Cgroup sched'] = is_enabled('CONFIG_CGROUP_SCHED')
 config_dict['Cgroup cpu account'] = is_enabled('CONFIG_CGROUP_CPUACCT')
