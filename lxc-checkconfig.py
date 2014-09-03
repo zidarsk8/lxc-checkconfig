@@ -23,9 +23,9 @@ class ArgParser(argparse.ArgumentParser):
 
 def is_set(config_name):
     if config.endswith('.gz'):
-        config_file = gzip.open(config, 'r')
+        config_file = [ i.decode('utf-8') for i in gzip.open(config, 'r').readlines()]
     else:
-        config_file = open(config, 'r')
+        config_file = [ i for i in open(config, 'r').readlines()]
 
     for line in config_file:
         if re.match('%s=[y|m]' % config_name, line):
