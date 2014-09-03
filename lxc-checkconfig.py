@@ -16,9 +16,9 @@ COLORS['missing'] = '\033[1;33m'
 
 def is_set(config_name):
     if config.endswith('.gz'):
-        config_file = gzip.open(config, 'r')
+        config_file = [ i.decode('utf-8') for i in gzip.open(config, 'r').readlines()]
     else:
-        config_file = open(config, 'r')
+        config_file = [ i for i in open(config, 'r').readlines()]
 
     for line in config_file:
         if re.match('%s=[y|m]' % config_name, line):
@@ -155,3 +155,4 @@ if (kver_major == 2 and kver_minor > 32) or kver_major > 2:
 
 
 print_config(config_dict)
+
