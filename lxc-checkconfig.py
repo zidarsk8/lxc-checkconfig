@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 import os.path
 import platform
+from collections import defaultdict
 import re
 import json
 import gzip
+import sys
 
 config = '/proc/config.gz'
 
+COLORS = defaultdict(lambda :'\033[0;39m')
+COLORS['enabled'] = '\033[1;32m'
+COLORS['requred'] = '\033[1;31m'
+COLORS['missing'] = '\033[1;33m'
 
 def is_set(config_name):
     if config.endswith('.gz'):
@@ -33,6 +39,31 @@ def get_cgroup_mount_path(search_for, search_where):
         if mount_line.strip().startswith(search_for):
             return mount_line.split(' ')[1]
     return ''
+
+def print_config(config_dict):
+    print_groups = {
+            "Namespaces" : [ "Namespaces","Utsname namespace","Ipc namespace","Pid namespace",
+                "User namespace","Network namespace","Multiple /dev/pts instances"],
+            "Control groups" : ["Cgroup", "Cgroup clone_children flag", "Cgroup device", 
+                "Cgroup sched", "Cgroup cpu account", "Cgroup memory controller", 
+                "Cgroup cpuset"],
+            "Misc" : ["Veth pair device", "Macvlan", "Vlan", "File capabilities"]
+            }
+    groups_order = ["Namespaces", "Control groups", "Misc"]
+
+    normal = COLORS['normal']
+    for name in groups_order:
+        print("--- %s ---" % name)
+        for field in print_groups[name]:
+            color = COLORS[config_dict[field].lower()]
+            print("%s: %s%s%s" % (field, color, config_dict[field], normal) )
+        print("")
+    
+    print("Note : Before booting a new kernel, you can check its configuration")
+    print("usage : CONFIG=/path/to/config /usr/bin/lxc-checkconfig")
+    print("")
+
+>>>>>>> Edit print style
 
 ####################################
 ## BASH CODE NEED HELP TO CONVERT ##
@@ -123,5 +154,4 @@ if (kver_major == 2 and kver_minor > 32) or kver_major > 2:
 
 
 
-print(json.dumps(config_dict, sort_keys=True,
-                 indent=4, separators=(',', ': ')))
+print_config(config_dict)
