@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import os.path
 import platform
-from collections import defaultdict
 import re
 import json
 import gzip
-import sys
+from collections import defaultdict
 
 config = '/proc/config.gz'
 
@@ -36,10 +35,9 @@ def is_enabled(config_name, mandatory=None):
 def get_cgroup_mount_path(search_for,search_where):
     allmounts = open(search_where,'r')
     for mount_line in allmounts:
-        if not mount_line.startswith('#'):
-            mls = mount_line.split(' ')
-            if mls[2] == search_for:
-                return mls[1]
+        if mount_line.strip().startswith(search_for):
+            return mount_line.split(' ')[1]
+    return ''
 
 def print_config(config_dict):
     print_groups = {
