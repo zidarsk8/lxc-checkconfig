@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import os.path
 import platform
-from collections import defaultdict
 import re
 import json
 import gzip
-import sys
+from collections import defaultdict
 
 config = '/proc/config.gz'
 
