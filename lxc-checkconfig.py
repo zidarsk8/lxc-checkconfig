@@ -32,6 +32,7 @@ def get_cgroup_mount_path(search_for, search_where):
     for mount_line in allmounts:
         if mount_line.strip().startswith(search_for):
             return mount_line.split(' ')[1]
+    return ''
 
 ####################################
 ## BASH CODE NEED HELP TO CONVERT ##
