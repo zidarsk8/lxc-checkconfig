@@ -2,6 +2,7 @@
 import os.path
 import platform
 import re
+import argparse
 import json
 import gzip
 from collections import defaultdict
@@ -12,6 +13,14 @@ COLORS = defaultdict(lambda :'\033[0;39m')
 COLORS['enabled'] = '\033[1;32m'
 COLORS['requred'] = '\033[1;31m'
 COLORS['missing'] = '\033[1;33m'
+
+
+# simplify error handling for argparse
+class ArgParser(argparse.ArgumentParser):
+    def error(self, message):
+        sys.stderr.write('error: %s\n' % message)
+        self.print_help()
+        sys.exit(2)
 
 def is_set(config_name):
     if config.endswith('.gz'):
@@ -150,6 +159,16 @@ if (kver_major == 2 and kver_minor > 32) or kver_major > 2:
     config_dict['File capabilities'] = 'enabled'
 
 
+if __name__ == "__main__":
 
-print_config(config_dict)
+    parser = ArgParser(description='Set network for a new container')
+    parser.add_argument('-j','--json', help='output in JSON format', action='store_true')
+    args = vars(parser.parse_args())
+
+    if args['json']:
+        print(json.dumps(config_dict, sort_keys=True, indent=4, separators=(',', ': ')))
+    else:
+        print_config(config_dict)
+
+
 
