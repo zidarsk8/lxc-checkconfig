@@ -70,8 +70,6 @@ def print_config(config_dict):
     print("usage : CONFIG=/path/to/config /usr/bin/lxc-checkconfig")
     print("")
 
->>>>>>> Edit print style
-
 ####################################
 ## BASH CODE NEED HELP TO CONVERT ##
 ####################################
