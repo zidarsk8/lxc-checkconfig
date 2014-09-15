@@ -17,10 +17,10 @@ def is_set(config_name):
     if config.endswith('.gz'):
         config_file = [ i.decode('utf-8') for i in gzip.open(config, 'r').readlines()]
     else:
-        config_file = [ i for i in open(config, 'r').readlines()]
+        config_file = open(config, 'r')
 
     for line in config_file:
-        if re.match('%s=[y|m]' % config_name, line):
+        if re.match('%s=[ym]' % config_name, line):
             return True
 
 def is_enabled(config_name, mandatory=None):
@@ -61,8 +61,6 @@ def print_config(config_dict):
     print("Note : Before booting a new kernel, you can check its configuration")
     print("usage : CONFIG=/path/to/config /usr/bin/lxc-checkconfig")
     print("")
-
->>>>>>> Edit print style
 
 ####################################
 ## BASH CODE NEED HELP TO CONVERT ##
