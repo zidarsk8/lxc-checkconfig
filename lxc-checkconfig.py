@@ -52,8 +52,8 @@ def print_config(config_dict):
     print_groups = {
             "Namespaces" : [ "Namespaces","Utsname namespace","Ipc namespace","Pid namespace",
                 "User namespace","Network namespace","Multiple /dev/pts instances"],
-            "Control groups" : ["Cgroup", "Cgroup clone_children flag", "Cgroup device", 
-                "Cgroup sched", "Cgroup cpu account", "Cgroup memory controller", 
+            "Control groups" : ["Cgroup", "Cgroup clone_children flag", "Cgroup namespace", 
+                "Cgroup device", "Cgroup sched", "Cgroup cpu account", "Cgroup memory controller",
                 "Cgroup cpuset"],
             "Misc" : ["Veth pair device", "Macvlan", "Vlan", "File capabilities"]
             }
@@ -63,6 +63,8 @@ def print_config(config_dict):
     for name in groups_order:
         print("--- %s ---" % name)
         for field in print_groups[name]:
+            if field not in config_dict :
+                continue
             color = COLORS[config_dict[field].lower()]
             print("%s: %s%s%s" % (field, color, config_dict[field], normal) )
         print("")
